@@ -4,10 +4,10 @@
 \alias{shape.all}
 \title{Perform `find.shape` for all JPEG files in the working directory.}
 \usage{
-shape.all(n.core = 2)
+shape.all(n.core = 1)
 }
 \arguments{
-\item{n.core}{The number of processor cores to use in processing. Default is 2.}
+\item{n.core}{The number of processor cores to use in processing. Default is 1.}
 }
 \value{
 A dataframe containing the image,BB width, BB length, perimeter, convex perimeter, area, convex hull area, compactness, roundness, and maximum length values for each object in all images in the working directory.

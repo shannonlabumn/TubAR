@@ -3,7 +3,7 @@
 \name{find.skin}
 \alias{find.skin}
 \title{Find skinning threshold across the image and return skinning percent by tuber
-assumes all potatoes in the image are a sampling of the same clone (:. will have same difference between skin/flesh colors)}
+assumes all potatoes in the image are a sampling of the same clone ( will have same difference between skin/flesh colors)}
 \usage{
 find.skin(
   image,
@@ -13,8 +13,8 @@ find.skin(
   pix.min = 40000,
   scaledown = 8,
   colorcard = "bottomright",
-  n.core = 2,
-  color_correct = T
+  n.core = 1,
+  color.correct = T
 )
 }
 \arguments{
@@ -28,18 +28,22 @@ find.skin(
 
 \item{pix.min}{is number of pixels expected for the smallest object to be designated a tuber}
 
-\item{scaledown}{by which image is divided for faster computing (a reduction in image size)}
+\item{scaledown}{Multiple by which image is divided for faster computing (a reduction in image size)}
 
 \item{colorcard}{= NULL/"bottomright" to remove a color card if used}
+
+\item{n.core}{The number of processor cores to use in processing. Default is 1.}
+
+\item{color.correct}{Determines if pixel values will be color corrected based on the color card. TRUE by default.}
 }
 \value{
 A list containing the redness, skinning, and lightness of each object in the image
 }
 \description{
 Find skinning threshold across the image and return skinning percent by tuber
-assumes all potatoes in the image are a sampling of the same clone (:. will have same difference between skin/flesh colors)
+assumes all potatoes in the image are a sampling of the same clone ( will have same difference between skin/flesh colors)
 }
 \examples{
   find.skin(system.file("images", "2020fy2_317.jpg", package = "TubAR"))
-  find.skin(system.file("images", "2020fy2_317.jpg", package = "TubAR"),display=T, mode="debug", write.clean=F, pix.min=4e4, scaledown=7, colorcard="bottomright", n.core=2, color_correct=T)
+  find.skin(system.file("images", "2020fy2_317.jpg", package = "TubAR"),display=T, mode="debug", write.clean=F, pix.min=4e4, scaledown=7, colorcard="bottomright", n.core=2, color.correct=T)
 }

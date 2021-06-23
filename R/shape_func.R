@@ -35,7 +35,6 @@ shape.all <- function(n.core=1){
 #' Unpack shape.all into a dataframe in melted format.
 #' @param results Input from shape.all
 #' @return A dataframe in melted format
-#' @examples
  unpack <- function(results){ # unpack shape.all into a dataframe in melted format
 	 t <- unlist(lapply(results, function(x) length(x[[1]])))
 	 traits <- names(results[[1]])
@@ -54,7 +53,6 @@ shape.all <- function(n.core=1){
  #' Returns the outline of an image object.
  #' @param Morig A binarized image matrix containing a single object
  #' @return Binarized image matrix of the outline of an object
- #' @examples
 get.trace <- function(Morig){
 	fac <- setdiff(unique(c(Morig)), 0)
 	M <- Morig/fac
@@ -80,7 +78,6 @@ get.trace <- function(Morig){
 #' Calculates the perimeter length from the coordinates of an object outline
 #' @param xy An integer vector of points on the convex hull of an object
 #' @return The perimeter length of the convex hull in pixels
-#' @examples
 get.perim <- function(xy){
 	perim <- rep(NA, dim(xy)[1])
 	perim[1] <- sqrt(abs(xy[length(perim), 1]-xy[1, 1])^2 + abs(xy[length(perim), 2]-xy[1,2])^2)
@@ -93,7 +90,6 @@ get.perim <- function(xy){
 #' Gives the length and width of the bounding box that would contain an object.
 #' @param xy A matrix of object outline coordinates
 #' @return A list of the bounding box endpoint coordinates, width, height, and angle
-#' @examples
 getMinBBox <- function(xy) { # source: http://dwoll.de/rexrepos/posts/diagBounding.html
     stopifnot(is.matrix(xy), is.numeric(xy), nrow(xy) >= 2, ncol(xy) == 2)
 

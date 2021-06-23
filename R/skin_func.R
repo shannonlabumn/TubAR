@@ -10,6 +10,7 @@
 #' @param pix.min The minimum pixel size required for objects to not be removed with the background,
 #' @param scaledown The amount image sizes will be reduced in order to aid processing speed
 #' @param colorcard Declares which corner the color card is in. "bottomright" by default. Can also be set to "bottomleft", "topright", and "topleft"
+#' @param color.correct Determines if pixel values will be color corrected based on the color card. TRUE by default.
 #'
 #' @return A nested list of median values for each image of rednees, skinning, and lightness and the values forthese traits for every object in every image.
 #' @examples
@@ -18,11 +19,11 @@
 #' @export
 
 # wrapper -- before running, the wd needs to be set to the directory containing the images
-skin.all <- function(n.core=1, display=T, mode="debug", write.clean=F, pix.min=4e3, scaledown=4, colorcard="bottomright", color_correct=T){
+skin.all <- function(n.core=1, display=T, mode="debug", write.clean=F, pix.min=4e3, scaledown=4, colorcard="bottomright", color.correct=T){
 	files <- list.files( pattern="*.jpg")
 	names <- gsub(".jpg", "", files)
 
-	results <- lapply(files, function(x) find.skin(x, display=display, mode=mode, write.clean=write.clean, pix.min=pix.min, scaledown=scaledown, colorcard=colorcard, n.core=n.core, color_correct=color_correct))
+	results <- lapply(files, function(x) find.skin(x, display=display, mode=mode, write.clean=write.clean, pix.min=pix.min, scaledown=scaledown, colorcard=colorcard, n.core=n.core, color.correct=color.correct))
 
 	names(results) <- names
 
@@ -44,21 +45,22 @@ skin.all <- function(n.core=1, display=T, mode="debug", write.clean=F, pix.min=4
 #' @param mode ="debug" plots skinned area, numbers each tuber
 #' @param write.clean =T saves a 'clean_image.jpg' with background whited out (for presentations, etc)
 #' @param pix.min is number of pixels expected for the smallest object to be designated a tuber
-#' @param scaledown by which image is divided for faster computing (a reduction in image size)
+#' @param scaledown Multiple by which image is divided for faster computing (a reduction in image size)
 #' @param colorcard = NULL/"bottomright" to remove a color card if used
-#'@param n.core The number of processor cores to use in processing. Default is 1.
+#' @param n.core The number of processor cores to use in processing. Default is 1.
+#' @param color.correct Determines if pixel values will be color corrected based on the color card. TRUE by default.
 #'
 #' @return A list containing the redness, skinning, and lightness of each object in the image
 #' @examples
 #'   find.skin(system.file("images", "2020fy2_317.jpg", package = "TubAR"))
-#'   find.skin(system.file("images", "2020fy2_317.jpg", package = "TubAR"),display=T, mode="debug", write.clean=F, pix.min=4e4, scaledown=7, colorcard="bottomright", n.core=2, color_correct=T)
+#'   find.skin(system.file("images", "2020fy2_317.jpg", package = "TubAR"),display=T, mode="debug", write.clean=F, pix.min=4e4, scaledown=7, colorcard="bottomright", n.core=2, color.correct=T)
 #' @import EBImage
 #' @import future
 #' @import future.apply
 #' @import boot
 #' @import minpack.lm
 #' @export
-find.skin <- function(image, display=T, mode="debug", write.clean=F, pix.min=4e4, scaledown=8, colorcard="bottomright", n.core=1, color_correct=T){
+find.skin <- function(image, display=T, mode="debug", write.clean=F, pix.min=4e4, scaledown=8, colorcard="bottomright", n.core=1, color.correct=T){
 
 	#read in the image
 	im <- readImage(image)
@@ -127,7 +129,7 @@ find.skin <- function(image, display=T, mode="debug", write.clean=F, pix.min=4e4
 									   im2@.Data[,,3][which(labels2==x)]))
 
 	# Color correction
-	if(color_correct==T){
+	if(color.correct==T){
 	  obs.land<-grabcard(image)
 	  if (length(obs.land)==72){
 	    card <- matrix(c(116,81,67,199,147,129,91,122,156,90,108,64,130,128,176,92,190,172,224,124,47,68,91,170,198,82,97,94,58,106,159,189,63,230,162,39,34,63,147,67,149,74,180,49,57,238,198,32,193,84,151,12,136,170,243,238,243,200,202,202,161,162,161,120,121,120,82,83,83,49,48,51), nrow = 24, ncol = 3, byrow = T)

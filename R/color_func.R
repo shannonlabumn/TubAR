@@ -9,7 +9,6 @@
 #' @param pix.min The minimum pixel size required for objects to not be removed with the background,
 #'
 #' @return An array of the 24 colors as RGB
-#' @examples
 #' @import Morpho
 
 # get color card, segment and return the 24 colors as RGB

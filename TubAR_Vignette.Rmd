@@ -14,11 +14,13 @@ TubAR (Tuber Analysis in R) allows users to analyze images of potatoes taken in 
 # Installing the package
 
 Use the `install_github` function from the devtools package to install TubAR.
-TubAR makes extensive use of the EBImage package, which is available through BiocManager, not CRAN, so you will also have to install those packages before TubAR.
+TubAR makes use of the EBImage and Biobase packages, which are available through BiocManager, not CRAN, so you will also have to install those packages before TubAR.
 ```{r, include=T, eval=F}
+install.packages("devtools")
 install.packages("BiocManager")
 BiocManager::install("EBImage")
-install_github("michaelmiller45/TubAR")
+BiocManager::install("Biobase")
+devtools::install_github("michaelmiller45/TubAR")
 ```
 
 # Collecting Image Data
@@ -69,7 +71,7 @@ setwd("./inst/images")
 shape.export(shape_exmp, remove_tag=T)
 skin.export(skin_exmp, remove_tag=T)
 ```
-These functions give 2 matrices of the median values of each trait for each image. !!!(Try to make this not necessary?) In order to ensure these functions work correctly the working directory should be set to the same folder the images are in.!!!
+These functions give 2 matrices of the median values of each trait for each image. In order to ensure these functions work correctly the working directory should be set to the same folder the images are in.
 
 # Functions Overview
 TubAR trait measurement is divided between two groups of functions: shape and skin functions. Shape functions measure traits using the shape and dimensions of the potato perimeter while skin functions measure traits using the color of the potato surface. 
@@ -88,7 +90,7 @@ TubAR can measure potato shape in eight ways using `find.shape()`. Multiple phot
 
 * `colorcard =` Lists which corner the colorcard is positioned in. This is set to "bottomright" by default. "bottomleft", "topright", and "topleft" are the other settings.
 
-If processing many photos, `shape.all()` will process all photos in the working directory. Keep the number of photos in the directory folder below 30 photos to avoid errors from sending too much data into the function.
+If processing many photos, `shape.all()` will process all photos in the working directory. Keep the number of photos in the directory folder below 30 photos when using RStudio to avoid errors from sending too much data into the function. Running R in the command line can allow for larger photo batches.
 
 * `n.core =` : Determines the number of processor cores to use in the function. This is set to 1 by default. This setting is going to depend on your computer and is usually limited if running R through RStudio.
 
@@ -136,7 +138,7 @@ TubAR measures three traits through the `find.skin()` function. Multiple photos 
 
 * `colorcard =` Lists which corner the colorcard is positioned in. This is set to "bottomright" by default. "bottomleft", "topright", and "topleft" are the other settings. If color correction causes errors or otherwise is not desired, this can be set to F to skip this step. Skipping this step will likely decrease the accuracy of the skin data and is not recommended.
 
-* `color_correct =` : This determines whether color correction will be preformed. This is set to TRUE by default 
+* `color.correct =` : This determines whether color correction will be preformed. This is set to TRUE by default 
 
 * `n.core =` : Determines the number of processor cores to use in the function. This is set to 1 by default. This setting is going to depend on your computer and is usually limited if running R through RStudio.
 
@@ -158,6 +160,3 @@ This function uses the name of the image file to identify clones in a picture so
 ### Tag Removal
 If a tag is included in the photo, it can be removed at the data export stage. Tag removal is turned off by default to avoid unintended removal of true potatoes. `skin.export(data, remove_tag=T)` and `shape.export(data, remove_tag=T)` can be used to include tag removal in the exporting process. The way tag removal is accomplished in each fuction is different and affects how each function can be utilized. `export.skin(remove_tag=T)` removes data that is outside of a range of redness values. The thresholds of this range should be set at values that are inclusive of the redness values of any potatoes but where the tags would be excluded. Because redness is being used as the threshold, bright red or bright green tags work best to ensure these threshold values exist. By default, the green threshold is set at -5 and the red threshold is set at 50. These can be adjusted using the arguments `green_thresh` and `red_thresh`.
 `export.shape(remove_tag=T)` removes data from objects below a certain roundness threshold. This is generally a more wide ranging way to distinguish tags from potatoes and any square or rectangular tags should be excluded through this function. By default, the roundness threshold is set at 0.7. This can be adjusted using the argument `roundness_thresh`.
-
-
-

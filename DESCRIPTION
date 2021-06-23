@@ -1,14 +1,14 @@
 Package: TubAR
 Type: Package
 Title: Potato Tuber Trait Image Analysis
-Version: 0.1.3
+Version: 0.1.4
 Authors@R: c(
     person(c("Michael", "D."), "Miller", email="mill6725@umn.edu", role= c("cre", "aut")),
     person("Cari", "Schmitz Carley", role= "aut"), 
     person(c("Laura", "M."), "Shannon", role= "aut"))
 Description: Quantitative rating of tuber skinning, color, perimeter,
     area, and shape. 
-Depends: R (>= 4.0.0)
+Depends: R (>= 3.4.4)
 Imports:
     Biobase (>= 2.48),
     EBImage (>= 4.20.1),
