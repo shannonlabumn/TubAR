@@ -31,9 +31,9 @@ TubAR is designed for use with a Photosimile 200 lightbox, however other lightbo
 
 # Example Walkthrough
 
-We will show the data organization and data workflow using an example data set of 11 photos. 
+We will show the data collection and organization workflow using an example data set of 11 photos. 
 
-Photos were taken using the previously described means photos were set in one file that was then set as the working directory.
+Photos were taken using the previously described means. Photos were set in one file that was then set as the working directory.
 ```{r setwd, include=T, eval=F}
 library(TubAR)
 setwd("./inst/images")
@@ -43,7 +43,7 @@ The `shape.all()` and `skin.all()` functions were used to create the `shape_exmp
 
 ```{r process images, include=T, eval=F}
 shape_exmp <- shape.all(n.core=1)
-skin_exmp <- skin.all(n.core=1, display=T, mode="debug", write.clean=F, pix.min=4e3,    scaledown=4, colorcard="bottomright")
+skin_exmp <- skin.all(n.core=1, display=T, mode="debug", write.clean=F, pix.min=4e3, scaledown=4, colorcard="bottomright")
 ```
 
 ```{r load examples, include=F}
