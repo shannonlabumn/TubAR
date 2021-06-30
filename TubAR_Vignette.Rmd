@@ -73,6 +73,13 @@ skin.export(skin_exmp, remove_tag=T)
 ```
 These functions give 2 matrices of the median values of each trait for each image. In order to ensure these functions work correctly the working directory should be set to the same folder the images are in.
 
+Writing a csv file of median trait values is often a simple way of preparing the output data for use in other programs and databases. If this is desired, the `write.csv` function can create a csv file for each matrix in the current working directory. 
+
+```{r writning csv, eval=F}
+write.csv(shape_exmp, file= "shape_exmp.csv", quote = FALSE)
+write.csv(skin_exmp, file= "skin_exmp.csv", quote = FALSE)
+```
+
 # Functions Overview
 TubAR trait measurement is divided between two groups of functions: shape and skin functions. Shape functions measure traits using the shape and dimensions of the potato perimeter while skin functions measure traits using the color of the potato surface. 
 
