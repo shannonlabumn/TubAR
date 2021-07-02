@@ -90,7 +90,13 @@ get.perim <- function(xy){
 #' Gives the length and width of the bounding box that would contain an object.
 #' @param xy A matrix of object outline coordinates
 #' @return A list of the bounding box endpoint coordinates, width, height, and angle
-getMinBBox <- function(xy) { # source: http://dwoll.de/rexrepos/posts/diagBounding.html
+############################################################################
+# Title: Convex hull, (minimum) bounding box, and minimum enclosing circle
+# Author: Daniel Wollschlaeger
+# Date: 2019
+# Source: http://dwoll.de/rexrepos/posts/diagBounding.html
+###########################################################################
+getMinBBox <- function(xy) {
     stopifnot(is.matrix(xy), is.numeric(xy), nrow(xy) >= 2, ncol(xy) == 2)
 
     ## rotating calipers algorithm using the convex hull
