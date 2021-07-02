@@ -167,3 +167,28 @@ This function uses the name of the image file to identify clones in a picture so
 ### Tag Removal
 If a tag is included in the photo, it can be removed at the data export stage. Tag removal is turned off by default to avoid unintended removal of true potatoes. `skin.export(data, remove_tag=T)` and `shape.export(data, remove_tag=T)` can be used to include tag removal in the exporting process. The way tag removal is accomplished in each fuction is different and affects how each function can be utilized. `export.skin(remove_tag=T)` removes data that is outside of a range of redness values. The thresholds of this range should be set at values that are inclusive of the redness values of any potatoes but where the tags would be excluded. Because redness is being used as the threshold, bright red or bright green tags work best to ensure these threshold values exist. By default, the green threshold is set at -5 and the red threshold is set at 50. These can be adjusted using the arguments `green_thresh` and `red_thresh`.
 `export.shape(remove_tag=T)` removes data from objects below a certain roundness threshold. This is generally a more wide ranging way to distinguish tags from potatoes and any square or rectangular tags should be excluded through this function. By default, the roundness threshold is set at 0.7. This can be adjusted using the argument `roundness_thresh`.
+
+# References
+
+Bivand, R.S., Pebesma, E., Gomez-Rubio, V., 2013. Applied
+  spatial data analysis with R, Second edition. Springer, NY.
+  https://asdar-book.org/  
+
+Pau, G., Fuchs, F., Sklyar, O., Boutros, M., and Huber, W, (2010): 
+  EBImage - an R   package for image processing withapplications to cellular  
+  phenotypes. Bioinformatics, 26(7), pp. 979-981,
+  10.1093/bioinformatics/btq046.
+  
+Pebesma, E.J., R.S. Bivand, 2005. Classes and methods for spatial data in
+  R. R News 5 (2), https://cran.r-project.org/doc/Rnews/.
+
+Schlager S (2017). “Morpho and Rvcg - Shape Analysis in R.” In Zheng G, Li
+  S, Szekely G (eds.), _Statistical Shape and Deformation Analysis_, 217-256.
+  Academic Press. ISBN 9780128104934.
+ 
+Timur V. Elzhov, Katharine M. Mullen, Andrej-Nikolai Spiess and Ben
+  Bolker (2016). minpack.lm: R Interface to the Levenberg-Marquardt
+  Nonlinear Least-Squares Algorithm Found in MINPACK, Plus Support for
+  Bounds. R package version 1.2-1, https://CRAN.R-project.org/package=minpack.lm
+  
+Wollschlaeger, D., (2019). Convex hull, (minimum) bounding box, and minimum enclosing circle. http://dwoll.de/rexrepos/posts/diagBounding.html.  
