@@ -1,7 +1,7 @@
 ---
 title: "Introdution to TubAR"
 author: "Michael D Miller, Cari Schmitz Carley, Laura M Shannon"
-date: "6/21/2021"
+date: "7/20/2021"
 output:
   pdf_document: default
   word_document: default
