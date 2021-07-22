@@ -11,6 +11,6 @@ install.packages("devtools")
 install.packages("BiocManager")
 BiocManager::install("EBImage")
 BiocManager::install("Biobase")
-devtools::install_github("michaelmiller45/TubAR")
+devtools::install_github("shannonlabumn/TubAR")
 ```
 More information on using the package is available in the package vignette.
