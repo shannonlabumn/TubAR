@@ -1,7 +1,7 @@
 ---
 title: "Introdution to TubAR"
 author: "Michael D Miller, Cari Schmitz Carley, Laura M Shannon"
-date: "7/20/2021"
+date: "7/27/2021"
 output:
   pdf_document: default
   word_document: default
@@ -92,7 +92,7 @@ TubAR can measure potato shape in eight ways using `find.shape()`. Multiple phot
 
 `find.shape()` takes an input JPEG image as well as several arguments to optimize speed and ensure potatoes are separated from the colorcard and debris.
 
-* `pix min =` Sets the minimum pixel size of an object to not be removed with the background. This helps to remove dirt, flaked skin, or other debris that the function might otherwise attempt to measure as a potato. By default, this is set at !!!4e3!!!. If the function is measuring too many shapes per photo this can be increased (An order of magnitude increase is reasonable in trying to calibrate this). On the other hand, if small potatoes are being excluded the number can be lowered.
+* `pix min =` Sets the minimum pixel size of an object to not be removed with the background. This helps to remove dirt, flaked skin, or other debris that the function might otherwise attempt to measure as a potato. By default, this is set at 4000. If the function is measuring too many shapes per photo this can be increased (An order of magnitude increase is reasonable in trying to calibrate this). On the other hand, if small potatoes are being excluded the number can be lowered.
 
 * `scaledown =` Sets the degree by which the image will be reduced in size to speed up processing. By default this is 8. Increasing the number will potentially speed up processing, however loss of detail will eventually lead to inaccurate measurements or errors.
 
