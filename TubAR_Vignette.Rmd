@@ -15,7 +15,7 @@ TubAR (Tuber Analysis in R) provides potato researchers with a simple means of q
 # Installing the package
 
 Use the `install_github` function from the devtools package to install TubAR.
-TubAR makes use of the EBImage and Biobase packages, which are available through BiocManager, not CRAN, so you will also have to install those packages before TubAR.
+TubAR makes use of the EBImage and Biobase packages, which are available through BiocManager, not CRAN, so you will also have to install those packages before TubAR. If you are using MacOS you may have to install XQuartz X11 (https://www.xquartz.org/) for EBImage to install properly.
 ```{r, include=T, eval=F}
 install.packages("devtools")
 install.packages("BiocManager")
@@ -195,7 +195,7 @@ Elzhov, T.V, Mullen, K.M, Spiess, A.N., and Bolker, B. (2016).
   Bounds. R package version 1.2-1, https://CRAN.R-project.org/package=minpack.lm
 
 Pau, G., Fuchs, F., Sklyar, O., Boutros, M., and Huber, W, (2010): 
-  EBImage - an R   package for image processing withapplications to cellular  
+  EBImage - an R   package for image processing with applications to cellular  
   phenotypes. Bioinformatics, 26(7), pp. 979-981,
   10.1093/bioinformatics/btq046.
   

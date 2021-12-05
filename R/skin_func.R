@@ -130,13 +130,13 @@ find.skin <- function(image, display=T, mode="debug", write.clean=F, pix.min=4e4
 
 	# Color correction
 	if(color.correct==T){
-	  obs.land<-grabcard(image)
+	  obs.land<-grabcard(image, colorcard=colorcard, scaledown=scaledown, pix.min=pix.min)
 	  if (length(obs.land)==72){
 	    card <- matrix(c(116,81,67,199,147,129,91,122,156,90,108,64,130,128,176,92,190,172,224,124,47,68,91,170,198,82,97,94,58,106,159,189,63,230,162,39,34,63,147,67,149,74,180,49,57,238,198,32,193,84,151,12,136,170,243,238,243,200,202,202,161,162,161,120,121,120,82,83,83,49,48,51), nrow = 24, ncol = 3, byrow = T)
 	    card2 <- as.matrix(card/255)
 	    rgb<-lapply(rgb, function(x)tps3d(x,obs.land,card2))
 	  }else{
-	    warning("color correction failure. Is card crooked?")
+	    warning("Error: color correction failure. Is card crooked?")
 	  }
 	}
 

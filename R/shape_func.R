@@ -13,17 +13,17 @@
 #' @import future.apply
 #' @import boot
 #' @export
-shape.all <- function(n.core=1){
+shape.all <- function(n.core=1, pix.min=4e3, scaledown=4, colorcard="bottomright"){
 	files <- list.files( pattern="*.jpg")
 	names <- gsub(".jpg", "", files)
 
 	if(n.core > 1){
 		plan(multiprocess, workers=n.core)
 
-		results <- future_lapply(files, function(x) find.shape(x))
+		results <- future_lapply(files, function(x) find.shape(x, pix.min=pix.min, scaledown=scaledown, colorcard=colorcard))
 
 	}else{
-			results <- lapply(files, function(x) find.shape(x))
+			results <- lapply(files, function(x) find.shape(x, pix.min=pix.min, scaledown=scaledown, colorcard=colorcard))
 
 		}
 
