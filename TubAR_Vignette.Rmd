@@ -3,9 +3,9 @@ title: "Introdution to TubAR"
 author: "Michael D Miller, Cari Schmitz Carley, Laura M Shannon"
 date: "7/27/2021"
 output:
-  pdf_document: default
-  word_document: default
   html_document: default
+  word_document: default
+  pdf_document: default
 ---
 
 # Abstract
@@ -15,7 +15,7 @@ TubAR (Tuber Analysis in R) provides potato researchers with a simple means of q
 # Installing the package
 
 Use the `install_github` function from the devtools package to install TubAR.
-TubAR makes use of the EBImage and Biobase packages, which are available through BiocManager, not CRAN, so you will also have to install those packages before TubAR. If you are using MacOS you may have to install XQuartz X11 (https://www.xquartz.org/) for EBImage to install properly.
+TubAR makes use of the EBImage and Biobase packages, which are available through BiocManager, not CRAN, so you will have to install those packages separately before TubAR. If you are using MacOS you may have to install XQuartz X11 (https://www.xquartz.org/) for EBImage to install properly.
 ```{r, include=T, eval=F}
 install.packages("devtools")
 install.packages("BiocManager")
@@ -26,7 +26,7 @@ devtools::install_github("shannonlabumn/TubAR")
 
 # Collecting Image Data
 
-TubAR is designed for use with a Photosimile 200 lightbox, however other lightboxes with approximately a 60cm by 60cm base should be compatible. The authors used a Canon Rebel T6i camera using a 24mm lens, ISO 100, 1/30 sec shutter speed and aperture f/5.6 to take photos. Potatoes should be washed and dried before imaging for accurate results. TubAR is intended for evaluating up to 10 tubers per photo. With large potatoes, fewer tubers per photo may be necessary to avoid contact between tubers. All tubers in one photo should be the same clone. A 24ColorCard 2x3 from CameraTrax should be included in a corner of the camera view for color correction (This specific color card is necessary to ensure proper color correction). Ensure this card remains straight, with the text at the bottom of the card, as shown in example pictures. If the card is crooked, this may hinder color correction. You may find it helpful to include a tag that identifies the pictured clone. Bright red or bright green, 8cm by 12cm rectangular tags are recommended for reliable removal of tags from data. Setting the tag in the upper left corner with no space between the tag and the edge of the picture is ideal. Input images should be in a JPEG format. Image file names should be chosen so that it is easy to identify the clone pictured without having to open and look at the photo. The zoom and camera placement should remain consistent for all samples that are to be compared. See Caraza‐Harter & Endelman (2020) for further information on set up.
+TubAR is designed for use with a Photosimile 200 lightbox, however other lightboxes with a solid white, blue, or black background. The authors used a Canon Rebel T6i camera using a 24mm lens, ISO 100, 1/30 sec shutter speed and aperture f/5.6 to take photos. Potatoes should be washed and dried before imaging for accurate results. TubAR is intended for evaluating up to 10 tubers per photo, but is capable of evaluating as many as 50. Potatos must not be touching in the photos, with larger staging areas and higher amounts of tubers it is also important to have as much space as possible between tubers. All tubers in one photo should be the same clone. A 24ColorCard 2x3 from CameraTrax should be included in a corner of the camera view for color correction using default settings. Other 24-color color cards can be used with additional settings covered later. Black backgrounds are not currently compatable with color cards. Ensure this card remains straight, with the text at the bottom of the card, as shown in example pictures. If the card is crooked, this may hinder color correction. You may find it helpful to include a tag that identifies the pictured clone. Bright red or bright green, 8cm by 12cm rectangular tags are recommended for reliable removal of tags from data. Setting the tag in the upper left corner with no space between the tag and the edge of the picture is ideal. Input images should be in a JPEG format. Image file names should be chosen so that it is easy to identify the clone pictured without having to open and look at the photo. The zoom, lighting, and camera placement should remain consistent for all samples that are to be compared. 
 
 ![This is an example of a photo to be imput into TubAR. Notice color card placement in the bottom right, the tag placement in the upper left, and tuber spacing.](inst/images/FY3Ch1_15_15.jpg)
 
@@ -40,7 +40,7 @@ library(TubAR)
 setwd("./inst/images")
 ```
 
-The `shape.all()` and `skin.all()` functions were used to create the `shape_exmp` and `skin_exmp` data. `skin.all()` will likely take several minutes.  
+The `shape.all()` and `skin.all()` functions were used to create the `shape_exmp` and `skin_exmp` data. `skin.all()` will likely take several minutes when used on a folder with more than two or three images.  
 
 ```{r process images, include=T, eval=F}
 shape_exmp <- shape.all(n.core=1)
@@ -100,7 +100,9 @@ TubAR can measure potato shape in eight ways using `find.shape()`. Multiple phot
 
 If processing many photos, `shape.all()` will process all photos in the working directory. Keep the number of photos in the directory folder below 30 photos when using RStudio to avoid errors from sending too much data into the function. Running R in the command line can allow for larger photo batches.
 
-* `n.core =` : Determines the number of processor cores to use in the function. This is set to 1 by default. This setting is going to depend on your computer and is usually limited if running R through RStudio.
+* `n.core =` : Determines the number of processor cores to use in the function. This is set to 1 by default. This setting is going to depend on your computer and is usually limited if running R through RStudio on MacOS.
+
+* `background.color =` The color of the background of the image. Black, blue, and white are currently supported. Default is white.
 
 ### Trait outputs
 
@@ -144,11 +146,17 @@ TubAR measures three traits through the `find.skin()` function. Multiple photos 
 
 * `scaledown =` Sets the degree by which the image will be reduced in size to speed up processing. By default this is 4. Increasing the number will potentially speed up processing, however loss of detail will eventually lead to inaccurate measurements or errors.
 
-* `colorcard =` Lists which corner the colorcard is positioned in. This is set to "bottomright" by default. "bottomleft", "topright", and "topleft" are the other settings. If color correction causes errors or otherwise is not desired, this can be set to F to skip this step. Skipping this step will likely decrease the accuracy of the skin data and is not recommended.
+* `colorcard =` Lists which corner the colorcard is positioned in. This is set to "bottomright" by default. "bottomleft", "topright", and "topleft" are the other settings. If color correction causes errors or otherwise is not desired, this can be set to FALSE to skip this step. Skipping this step might be necessary with some pictures that are incompatible with color correction (i.e. black background with black outlined color card) but is highly recommended in compatible photos for the most accurate outputs.
 
 * `color.correct =` : This determines whether color correction will be preformed. This is set to TRUE by default 
 
-* `n.core =` : Determines the number of processor cores to use in the function. This is set to 1 by default. This setting is going to depend on your computer and is usually limited if running R through RStudio.
+* `n.core =` : Determines the number of processor cores to use in the function. This is set to 1 by default. This setting is going to depend on your computer and is usually limited if running R through RStudio on MacOS.
+
+* `background.color =` The color of the background of the image. Black, blue, and white are currently supported. Default is white.
+
+* `color.values =` Color correction will change the color card RGB values to match this value. "Default" uses RGB values from the manufacturer CameraTrax. "Revised" uses values from a photo selected by the authors that results in a more "natural looking" color correction. Otherwise, this should be a matrix of the RGB values for the 24-color card starting with the top right color going down, then left.
+
+* `color.center =` Two item list of the coordinates of the center pixel of each color chip in terms of the proportion of the card to the left/above the pixel. The list should contain 2 vectors, the first going left to right and the second going up to down.
 
 ### Trait Outputs
 
@@ -156,18 +164,74 @@ TubAR measures three traits through the `find.skin()` function. Multiple photos 
     : This is an estimate of the percentage of skinned surface area of the tuber.
 
 * Redness
-    : This is the average level of redness, as defined by the CIELAB colorspace, of the unskinned portion of the tuber.
+    : This is the average level of redness, as defined by the CIE LAB colorspace, of the unskinned portion of the tuber.
     
 * Lightness
-    : This is the average level of lightness, as defined by the CIELAB colorspace, of the unskinned portion of the tuber.
+    : This is the average level of lightness, as defined by the CIE LAB colorspace, of the unskinned portion of the tuber.
+
+### Using a Different Color Card
+Any color card with 24 colors in a 6x4 grid should be able to be used for color correction with some additional steps. TubAR will need the relative location of the center pixel of each color chip on the color card as well as the desired RGB values of each color chip. 
+This first step is most easily achieved by measuring the dimensions of the physical color card or a picture of the card, as well as the distances to the center of each row and column of color chips. Divide the distance of each column by the width of the card, and each row by the length. Pass these as two vectors into the `color.center =` parameter.
+
+![The numbers at each point are the proportion of the length and witdh color card each row and column are positioned. These values will be entered into two seperate vectors within a list.](inst/color_correction/image843.png)
+```{r color.center, eval=F}
+#This is how the color.center values should be given to the color.center parameter
+color.center = list(c(0.20,0.41,0.63,0.85),c(0.11,0.26,0.40,0.55,0.69,0.84))
+```
+
+The desired RGB values for color chips to be corrected to can be taken from the RGB values of the pixels of the corresponding color chips in any photo of the color card or from information given by the manufacture. The precise RGB values used as the "correct" colors are not important, but consistant use of these values across samples being analyzed is important.
+This information should be passed to the `color.values =` parameter in the form of a 24 row, 3 column matrix with each row representing one color chip, starting from the top right and proceeding down the column, then left to the top of the second to the right column. The three columns should be the R, G, and B values, respectively. 
+
+![This is the order the RGB values of the colors should be listed in.](inst/color_correction/image843-3.png)
+```{r color.values, eval=F}
+#A matrix like this is what should be passed to the color.values parameter
+color.values = matrix(c(116,81,67,199,147,129,91,122,156,90,108,64,130,128,176, +
+                       92,190,172,224,124,47,68,91,170,198,82,97,94,58,106,159, +
+                       189,63,230,162,39,34,63,147,67,149,74,180,49,57,238,198, +
+                       32,193,84,151,12,136,170,243,238,243,200,202,202,161,162, +
+                       161,120,121,120,82,83,83,49,48,51), +
+                      nrow = 24, ncol = 3, byrow = T)
+```
 
 ## Exporting Data
 The export functions `skin.export()` and `shape.export()` create a matrix of median values for each trait for each picture. this matrix is meant to be easy to turn into a csv or other file or to pass into other functions and programs.
-This function uses the name of the image file to identify clones in a picture so it is recommended that pictures be given names that can be easily tied back to a particular clone.
+This function uses the name of the image file to identify clones in a picture so it is recommended that pictures be given names that can be easily tied back to the particular sample.
 
 ### Tag Removal
 If a tag is included in the photo, it can be removed at the data export stage. Tag removal is turned off by default to avoid unintended removal of true potatoes. `skin.export(data, remove_tag=T)` and `shape.export(data, remove_tag=T)` can be used to include tag removal in the exporting process. The way tag removal is accomplished in each fuction is different and affects how each function can be utilized. `export.skin(remove_tag=T)` removes data that is outside of a range of redness values. The thresholds of this range should be set at values that are inclusive of the redness values of any potatoes but where the tags would be excluded. Because redness is being used as the threshold, bright red or bright green tags work best to ensure these threshold values exist. By default, the green threshold is set at -5 and the red threshold is set at 50. These can be adjusted using the arguments `green_thresh` and `red_thresh`.
 `export.shape(remove_tag=T)` removes data from objects below a certain roundness threshold. This is generally a more wide ranging way to distinguish tags from potatoes and any square or rectangular tags should be excluded through this function. By default, the roundness threshold is set at 0.7. This can be adjusted using the argument `roundness_thresh`.
+
+## Chip and Fry color functions
+Lab color values as well as discoloration and lightness gradient can be measured in pictures of chips or fries using the `find.chip()` function.
+
+### Function Inputs and Parameters
+* `display =` : This determines whether R wil output an image with grayscale objects. This can be useful for ensuring all potatoes are being detected while debris is removed and for visualization of the analysis process. by default this is set to TRUE.
+
+* `mode =` : If this is set to "debug" the display will show numbered objects and skinned area on the objects.
+
+* `write.clean=` : If set to TRUE, an image of the potatoes with the background removed will be created, which may be wanted for situations such as presentations. This is set to FALSE by default.
+
+* `pix min =` Sets the minimum pixel size of an object to not be removed with the background. This helps to remove dirt, flaked skin, or other debris that the function might otherwise attempt to measure as a potato. By default, this is set at 4000. If the function is measuring too many shapes per photo this can be increased (An order of magnitude increase is reasonable in trying to callibrate this). On the other hand, if small potatoes are being excluded the number can be lowered.
+
+* `scaledown =` Sets the degree by which the image will be reduced in size to speed up processing. By default this is 4. Increasing the number will potentially speed up processing, however loss of detail will eventually lead to inaccurate measurements or errors.
+
+* `colorcard =` Lists which corner the colorcard is positioned in. This is set to "bottomright" by default. "bottomleft", "topright", and "topleft" are the other settings. If color correction causes errors or otherwise is not desired, this can be set to FALSE to skip this step. Skipping this step might be necessary with some pictures that are incompatible with color correction (i.e. black background with black outlined color card) but is highly recommended in compatible photos for the most accurate outputs.
+
+* `color.correct =` : This determines whether color correction will be preformed. This is set to TRUE by default 
+
+* `n.core =` : Determines the number of processor cores to use in the function. This is set to 1 by default. This setting is going to depend on your computer and is usually limited if running R through RStudio on MacOS.
+
+* `background.color =` The color of the background of the image. Black, blue, and white are currently supported. Default is white.
+
+* `color.values =` Color correction will change the color card RGB values to match this value. "Default" uses RGB values from the manufacturer CameraTrax. "Revised" uses values from a photo selected by the authors that results in a more "natural looking" color correction. Otherwise, this should be a matrix of the RGB values for the 24-color card starting with the top right color going down, then left.
+
+* `color.center =` Two item list of the coordinates of the center pixel of each color chip in terms of the proportion of the card to the left/above the pixel. The list should contain 2 vectors, the first going left to right and the second going up to down.
+
+* `discolor =` Whether or not chip discoloration area percentage should be measured. TRUE by default. Can be set to FALSE to speed processing time if only color values are desired.
+
+* `threshold =` Threshold for chip area to be considered discolored. Set to 0.78 by default, should be between 0 and 1. This can be difficult to set and may require trial and error with sample pictures. It is recommended `display = TRUE` to check accuracy.
+
+* `fry.gradient =` Whether the function should output a ratio representing the severity of the gradient in lightness between the top and bottom of French fries. This number is based on the median value of the pixels between the pixel 1/8th of the way down the fry and the pixel 1/6th of the way down the fry and the median value of the mirror region on the bottom of the fry.
 
 # References
 

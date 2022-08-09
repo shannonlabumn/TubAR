@@ -7,12 +7,13 @@
 #' @param colorcard Declares which corner the color card is in. "bottomright" by default. Can also be set to "bottomleft", "topright", and "topleft"
 #' @param scaledown The amount image sizes will be reduced in order to aid processing speed
 #' @param pix.min The minimum pixel size required for objects to not be removed with the background,
+#' @param color.center Two item list of the coordinates of the center pixel of each color chip in terms of the proportion of the card to the left/above the pixel. The list should contain 2 vectors, the first going left to right and the second going up to down.
 #'
 #' @return An array of the 24 colors as RGB
 #' @import Morpho
 
 # get color card, segment and return the 24 colors as RGB
-grabcard <- function(image, colorcard="bottomright", scaledown=8, pix.min=4e4){
+grabcard <- function(image, colorcard="bottomright", scaledown=8, pix.min=4e4, color.center = "default"){
   #read in the image
   im <- readImage(image)
 
@@ -71,14 +72,10 @@ grabcard <- function(image, colorcard="bottomright", scaledown=8, pix.min=4e4){
     }
   }
 
-
-
   im3 <- im2c
   im3@.Data[,,1][which(labels2==0)] <- 0
   im3@.Data[,,2][which(labels2==0)] <- 0
   im3@.Data[,,3][which(labels2==0)] <- 0
-
-
 
   # blur <- medianFilter(im3, 5)
   # cluster the grayscale version
@@ -95,13 +92,14 @@ grabcard <- function(image, colorcard="bottomright", scaledown=8, pix.min=4e4){
   # ix <- which(apply(dat, 1, sum)==0)
   # dat2 <- dat[-ix, ]
 
-  card <- matrix(c(116,81,67,199,147,129,91,122,156,90,108,64,130,128,176,92,190,172,224,124,47,68,91,170,198,82,97,94,58,106,159,189,63,230,162,39,34,63,147,67,149,74,180,49,57,238,198,32,193,84,151,12,136,170,243,238,243,200,202,202,161,162,161,120,121,120,82,83,83,49,48,51), nrow = 24, ncol = 3, byrow = T)
-  card2 <- as.matrix(card/255)
-
-  # coordinates of the center of each color chip on the card
-  firstD<-c(0.20,0.41,0.63,0.85)
-  secondD<-c(0.11,0.26,0.40,0.55,0.69,0.84)
-
+  if(color.center == "default"){
+    # coordinates of the center of each color chip on the card
+    centers<-list(c(0.20,0.41,0.63,0.85),c(0.11,0.26,0.40,0.55,0.69,0.84))
+  }else{
+    centers<-color.center
+  }
+  firstD<-unlist(centers[1])
+  secondD<-unlist(centers[2])
   # crop image to only include color card
   im5<-im3[min(which(im3[,,]>0, arr.ind=T)[,1]):max(which(im3[,,]>0, arr.ind=T)[,1]),min(which(im3[,,]>0, arr.ind=T)[,2]):max(which(im3[,,]>0, arr.ind=T)[,2]),]
 

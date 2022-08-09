@@ -1,7 +1,7 @@
 Package: TubAR
 Type: Package
 Title: Potato Tuber Trait Image Analysis
-Version: 1.0.1
+Version: 1.1.0
 Authors@R: c(
     person(c("Michael", "D."), "Miller", email="mill6725@umn.edu", role= c("cre", "aut")),
     person("Cari", "Schmitz Carley", role= "aut"), 

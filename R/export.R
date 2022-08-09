@@ -180,6 +180,134 @@ shape.export<-function(shape_dat, remove_tag=TRUE, roundness_thresh=0.7){
   return(shape_matrix)
 }
 
+#################
+##CHIP/FRY DATA##
+#################
 
+#' Turn the output from chip.all into a matrix of median trait values
+#'
+#' @param color_list Output from chip.all function
+#' @param remove_tag If TRUE, objects below `green_thresh` or above `red_thresh` will be removed from the data before taking median values
+#' @param discolor Whether chip discoloration data is included in the output
+#' @param fry.gradient Whether French fry gradient data is included in the input
+#'
+#'
+#' @return A matrix of the median values of redness, skinning, and lightness for each image
+#' @examples
+#'   load(system.file("example_data", "skin_exmp.rds", package = "TubAR"))
+#'   skin.export(skin_exmp, remove_tag=TRUE, green_thresh=-5, red_thresh=50)
+#' @importFrom Biobase subListExtract
+#' @export
+chip.export<-function(color_list, discolor = FALSE, fry.gradient = FALSE){
+  # seperate data for each metric
+  TByel<-subListExtract(color_list$by.tuber,"yellowness")
+  TBred<-subListExtract(color_list$by.tuber,"redness")
+  TBlight<-subListExtract(color_list$by.tuber,"lightness")
 
+  # turn the data lists into arrays
+  TByelt=array()
+  for(item in TByel){
 
+    TByelt<-suppressWarnings(cbind(TByelt,as.array(item)))
+
+  }
+  TByelt<-TByelt[,2:length(colnames(TByelt))]
+  colnames(TByelt)<-names(TByel)
+
+  TBredt=array()
+  for(item in TBred){
+
+    TBredt<-suppressWarnings(cbind(TBredt,as.array(item)))
+
+  }
+
+  TBredt<-TBredt[,2:length(colnames(TBredt))]
+  colnames(TBredt)<-names(TBred)
+
+  TBlightt=array()
+  for(item in TBlight){
+
+    TBlightt<-suppressWarnings(cbind(TBlightt,as.array(item)))
+
+  }
+
+  TBlightt<-TBlightt[,2:length(colnames(TBlightt))]
+  colnames(TBlightt)<-names(TBlight)
+
+  # flip arrays so that lines are rows
+  TBredt<-t(TBredt)
+  TByelt<-t(TByelt)
+  TBlightt<-t(TBlightt)
+
+  # find medians for rows
+  TBred_med<-apply(TBredt,1,median)
+  TByel_med<-apply(TByelt,1,median)
+  TBlight_med<-apply(TBlightt,1,median)
+
+  #Optional organization of other traits
+  if(discolor == TRUE){
+    # seperate data for each metric
+    TBdis<-subListExtract(color_list$by.tuber,"discoloration")
+
+    # turn the data lists into arrays
+    TBdist=array()
+    for(item in TBdis){
+
+      TBdist<-suppressWarnings(cbind(TBdist,as.array(item)))
+
+    }
+    TBdist<-TBdist[,2:length(colnames(TBdist))]
+    colnames(TBdist)<-names(TBdis)
+
+    # flip arrays so that lines are rows
+    TBdist<-t(TBdist)
+
+    # find medians for rows
+    TBdis_med<-apply(TBdist,1,median)
+  }
+  if(fry.gradient == TRUE){
+    # seperate data for each metric
+    TBgrad<-subListExtract(color_list$by.tuber,"gradient")
+
+    # turn the data lists into arrays
+    TBgradt=array()
+    for(item in TBgrad){
+
+      TBgradt<-suppressWarnings(cbind(TBgradt,as.array(item)))
+
+    }
+
+    TBgradt<-TBgradt[,2:length(colnames(TBgradt))]
+    colnames(TBgradt)<-names(TBgrad)
+
+    # flip arrays so that lines are rows
+    TBgradt<-t(TBgradt)
+
+    # find medians for rows
+    TBgrad_med<-apply(TBgradt,1,median)
+  }
+
+  #Print correct matrix for traits included
+  if(discolor == TRUE & fry.gradient == TRUE){
+    # Make export matrix
+    color_matrix<-matrix(c(TBlight_med,TBred_med,TByel_med,TBdis_med,TBgrad_med),nrow=length(TBred_med), ncol=5)
+    rownames(color_matrix)<-names(TBred_med)
+    colnames(color_matrix)<-c("lightness","redness","yellowness","discoloration","gradient")
+  }else if(discolor == TRUE){
+    # Make export matrix
+    color_matrix<-matrix(c(TBlight_med,TBred_med,TByel_med,TBdis_med),nrow=length(TBred_med), ncol=4)
+    rownames(color_matrix)<-names(TBred_med)
+    colnames(color_matrix)<-c("lightness","redness","yellowness","discoloration")
+  }else if(fry.gradient == TRUE){
+    # Make export matrix
+    color_matrix<-matrix(c(TBlight_med,TBred_med,TByel_med,TBgrad_med),nrow=length(TBred_med), ncol=4)
+    rownames(color_matrix)<-names(TBred_med)
+    colnames(color_matrix)<-c("lightness","redness","yellowness","gradient")
+  }else{
+    # Make export matrix
+    color_matrix<-matrix(c(TBlight_med,TBred_med,TByel_med),nrow=length(TBred_med), ncol=3)
+    rownames(color_matrix)<-names(TBred_med)
+    colnames(color_matrix)<-c("lightness","redness","yellowness")
+  }
+  return(color_matrix)
+}

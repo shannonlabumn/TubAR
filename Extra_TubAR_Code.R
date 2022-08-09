@@ -215,7 +215,77 @@ col1 <- names(sort(Kxy$centers[orderX[19:24],2], decreasing=F))
 
 cardorder <- as.numeric(c(col4,col3,col2,col1))
 
+###Early attempts at Russet function
+install.packages("wvtool")
+install.packages("tiff")
+library(tiff)
+library(wvtool)
+library(EBImage)
+setwd("/Users/michaelmiller/Documents/Russet_test_set")
+RusImg <- readImage("FY3Ru12_6_5-2 copy.tif")
+rgb2gray(RusImg)
+display(RusImg)
 
+RusImg <- readTIFF("FY3Y22_7_2 copy.tif",info=T)
+RusImg <- rgb2gray(RusImg)
+RusThresh <- edge.detect(RusImg, thresh1=31, thresh2=93, noise="gaussian", noise.s=3, method="Canny")
+display(RusThresh)
+
+RedImg <- readTIFF("net_reds.tif",info=T)
+RedImg <- rgb2gray(RedImg)
+RedThresh <- edge.detect(RedImg, thresh1=48, thresh2=93, noise="gaussian", noise.s=3, method="Canny")
+display(RedThresh)
+
+ChipImg <- readTIFF("ChipBruise.tif",info=T)
+ChipImg <- rgb2gray(ChipImg)
+ChipThresh <- edge.detect(ChipImg, thresh1=32, thresh2=96, noise="median", noise.s=5, method="Canny")
+display(ChipThresh)
+
+install.packages("helloJavaWorld")
+helloJavaWorld::helloJavaWorld()
+install.packages("RImageJ")
+install.packages("rJava")
+library(rJava)
+
+library(RImageJ)
+download.file( "http://www.google.fr/intl/en_en/images/logo.gif",
+               dest = "google.gif" )
+
+image = IJ$openImage( "google.gif" )
+image$show()
+IJ$run( "8-bit" )
+IJ$run( "Invert" )
+IJ$save( "bw-google.gif" )
+image$close()
+
+RusTab <- read.csv("Summary_of_Probability_maps.csv", header = T)
+RusTab <- as.data.frame(RusTab)
+RusPC <- RusTab$Total.Area[2]/(RusTab$Total.Area[1] + RusTab$Total.Area[2])
+RusPC
+
+library(rJava)
+.jinit() # this starts the JVM
+s <- .jnew("java/lang/String", "Hello World!")
+.jcall(s,"I","length")
+.jcall(s,"I","indexOf","World")
+.jmethods(s,"concat")
+.jcall(s,"Ljava/lang/String;","concat",s)
+print(s)
+.jstrVal(s)
+f <- .jnew("java/awt/Frame", "Hello")
+b <- .jnew("java/awt/Button", "OK")
+.jcall(f, "Ljava/awt/Component;", "add", .jcast(b, "java/awt/Component"))
+.jcall(f,, "pack")
+.jcall(f,, "setVisible", TRUE)
+
+s$length()
+
+s <- .jnew("ij")
+
+system("java -jar /Users/michaelmiller/Downloads/RImageJ/inst/java/ij.jar")
+system("java -jar /Applications/Fiji.app/jars/ij-1.53c.jar -ijpath /Applications/Fiji.app --headless -macro RusMacro")
+system("ImageJ -macro /Users/michaelmiller/Documents/Hello_World.ijm")
+system("/Applications/Fiji.app/Contents/MacOS/ImageJ-macosx --headless -macro Hello_World")
 
 
 

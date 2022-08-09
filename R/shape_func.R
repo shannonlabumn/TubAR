@@ -4,6 +4,10 @@
 #' Perform `find.shape` for all JPEG files in the working directory.
 #'
 #' @param n.core The number of processor cores to use in processing. Default is 1.
+#' @param pix.min is number of pixels expected for the smallest object to be designated a tuber
+#' @param scaledown by which image is divided for faster computing (a reduction in image size)
+#' @param colorcard = NULL/"bottomright" to remove a color card if used
+#' @param background.color The color of the background of the image. "black", "blue", and "white" are currently supported. Default is white.
 #'
 #' @return A dataframe containing the image,BB width, BB length, perimeter, convex perimeter, area, convex hull area, compactness, roundness, and maximum length values for each object in all images in the working directory.
 #' @examples
@@ -13,17 +17,17 @@
 #' @import future.apply
 #' @import boot
 #' @export
-shape.all <- function(n.core=1, pix.min=4e3, scaledown=4, colorcard="bottomright"){
-	files <- list.files( pattern="*.jpg")
-	names <- gsub(".jpg", "", files)
+shape.all <- function(n.core=1, pix.min=4e3, scaledown=4, colorcard="bottomright", background.color="white"){
+  files <- list.files( pattern=".*\\.(jpg|JPG)$")
+  names <- gsub(".jpg", "", files, ignore.case = T)
 
 	if(n.core > 1){
 		plan(multiprocess, workers=n.core)
 
-		results <- future_lapply(files, function(x) find.shape(x, pix.min=pix.min, scaledown=scaledown, colorcard=colorcard))
+		results <- future_lapply(files, function(x) find.shape(x, pix.min=pix.min, scaledown=scaledown, colorcard=colorcard, background.color=background.color))
 
 	}else{
-			results <- lapply(files, function(x) find.shape(x, pix.min=pix.min, scaledown=scaledown, colorcard=colorcard))
+			results <- lapply(files, function(x) find.shape(x, pix.min=pix.min, scaledown=scaledown, colorcard=colorcard, background.color=background.color))
 
 		}
 
@@ -166,6 +170,7 @@ getMinBBox <- function(xy) {
 #' @param pix.min is number of pixels expected for the smallest object to be designated a tuber
 #' @param scaledown by which image is divided for faster computing (a reduction in image size)
 #' @param colorcard = NULL/"bottomright" to remove a color card if used
+#' @param background.color The color of the background of the image. "black", "blue", and "white" are currently supported. Default is white.
 #'
 #' @return A nested list with the BB width, BB length, perimeter, convex perimeter, area, convex hull area, compactness, roundness, and maximum length values for each object.
 #' @examples
@@ -177,7 +182,7 @@ getMinBBox <- function(xy) {
 #' @import future.apply
 #' @import boot
 #' @export
-find.shape <- function(image, pix.min=4e3, scaledown=4, colorcard="bottomright"){
+find.shape <- function(image, pix.min=4e3, scaledown=4, colorcard="bottomright", background.color="white"){
 
 	#read in the image
 	im <- readImage(image)
@@ -189,9 +194,17 @@ find.shape <- function(image, pix.min=4e3, scaledown=4, colorcard="bottomright")
 	}
 
 	# grayscale the image
-	gr <- im2@.Data[,,3] # for red potatoes the best separation btwn bkgrnd & tuber is in the B spectrum
-	# gr <- channel(im2, "gray") # an alternative, but for our images more sensitive to reflections on tubers
-	bi <- gr > 0.75
+	if(background.color=="black"){
+	  gr <- im2@.Data[,,1] # for the black background red seems to allow potatoes of different types to stand out the most
+	  bi <- gr < 0.5
+	}else if(background.color=="blue"){
+	  gr <- im2@.Data[,,3]#blue(B) is obviously the best spectrum to look at here
+	  bi <- gr > 0.55 #hard to get a good threshold here with the example photos I had
+	}else{
+	  gr <- im2@.Data[,,3] # for red potatoes the best separation btwn bkgrnd & tuber is in the B spectrum
+	  #gr <- channel(im2, "gray") # an alternative, but for our images more sensitive to reflections on tubers
+	  bi <- gr > 0.75
+	}
 
 	# fill any holes in the objects
 	bifil <- fillHull(1-bi)
